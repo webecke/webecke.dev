@@ -11,7 +11,7 @@ function App() {
           Edit <code>src/App.tsx</code> and save to reload.
           Memer? I hardly know her!
         </p>
-        <p>Hi Dad! i'm typing this on my computer, then pushing to github</p>
+        <p>I wanted to see how a preview branch works</p>
         <a
           className="App-link"
           href="https://reactjs.org"
