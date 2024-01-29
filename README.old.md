@@ -1,2 +1,0 @@
-# webecke.dev
-first commit
