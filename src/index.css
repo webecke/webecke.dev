@@ -59,11 +59,11 @@
 }
 
 .bigHeaderName {
-  font-size: 10rem;
+  font-size: 12vw;
 }
 
 .smallHeaderName {
-  font-size: 5rem;
+  font-size: 6vw;
 }
 
 body {
@@ -105,3 +105,4 @@ body {
   50%{background-position:99% 100%}
   100%{background-position:2% 0%}
 }
+
