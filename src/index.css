@@ -32,7 +32,19 @@
 
 .nameHeader {
   text-align: center;
-  line-height: 1;
+  line-height: 0.75;
+
+  background: linear-gradient(291deg,  #3d760f, #005a0b, #272e9b, #1d8a90);
+  #background-size: 800% 800%;
+
+  -webkit-animation: DallinGradient 30s ease infinite;
+  -moz-animation: DallinGradient 30s ease infinite;
+  animation: DallinGradient 30s ease infinite;
+  font-weight: 600;
+  background-size: 200% auto;
+  color: #000;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .headerName {
@@ -74,6 +86,8 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+
+  overflow: hidden;
 }
 
 @-webkit-keyframes DallinGradient {
