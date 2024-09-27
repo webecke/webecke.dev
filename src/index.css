@@ -88,6 +88,26 @@ body {
   align-items: center;
 
   overflow: hidden;
+  text-align: center;
+}
+
+.links {
+  display: flex;
+  width: 100vw;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 10px;
+}
+.link {
+  color: rgba(255, 255, 255, 0.16);
+  text-decoration: none;
+  font-size: MAX(2.5vw, 20px);
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+  padding: 10px;
+}
+.link:hover {
+  color: #00ffd0;
+  text-shadow: 0 0 10px #00ffff;
 }
 
 @-webkit-keyframes DallinGradient {
