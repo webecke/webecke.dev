@@ -126,3 +126,58 @@ body {
   100%{background-position:2% 0%}
 }
 
+.ForestBluePage {
+  width: 80vw;
+  max-width: 700px;
+  text-align: left;
+  align-content: center;
+  overflow-y: auto;
+  height: 100vh;
+  padding: 100px 15px;
+}
+
+#ForestBlueLogo {
+  margin-top: 10px;
+}
+
+.ForestBluePage p {
+  color: white;
+  font-size: 20px;
+  margin-top: 15px;
+  line-height: 30px;
+}
+
+h2 {
+  margin-top: 25px;
+  margin-bottom: 0;
+  font-size: 35px;
+  color: white;
+  font-weight: bolder;
+}
+
+h3 {
+  margin-top: 20px;
+  font-size: 27px;
+  color: white;
+  font-weight: bold;
+}
+
+.About {
+  width: 40vw;
+  min-width: MIN(400px, 100%);
+  display: flex;
+  flex-direction: column;
+  margin: 10px auto;
+}
+
+.backLink {
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+}
+
+.standardLink {
+  font-size: 20px;
+  margin: 0;
+  padding: 0;
+}
