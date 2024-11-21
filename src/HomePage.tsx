@@ -17,7 +17,7 @@ function HomePage() {
                     className="fa fa-youtube"/></a>
                 <a className="link" href="https://instagram.com/dallin.from.earth" target="_blank" rel="noreferrer"><i
                     className="fa fa-instagram"/></a>
-                <a className="link" href="https://github.com/DallinFromEarth" target="_blank" rel="noreferrer"><i
+                <a className="link" href="https://github.com/webecke" target="_blank" rel="noreferrer"><i
                     className="fa fa-github-square"/></a>
                 <a className="link" href="https://www.linkedin.com/in/dallin-webecke/" target="_blank" rel="noreferrer"><i
                     className="fa fa-linkedin-square"/></a>

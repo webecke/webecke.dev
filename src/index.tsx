@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import HomePage from "./HomePage";
-import ForestBlue from "./ForestBlue";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 const root = ReactDOM.createRoot(
@@ -15,7 +14,6 @@ const App: React.FC = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="" element={<HomePage/>}/>
-                <Route path="forestblue" element={<ForestBlue/>}/>
             </Routes>
         </BrowserRouter>
     );
