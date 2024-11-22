@@ -34,7 +34,7 @@
   text-align: center;
   line-height: 0.75;
 
-  background: linear-gradient(291deg, #00ff3b, #00ffcf, #000ef6, #aafaff);
+  background: linear-gradient(291deg, #1e3a8a, #3b82f6, #60a5fa, #93c5fd);
   #background-size: 800% 800%;
 
   -webkit-animation: DallinGradient 20s ease infinite;
@@ -49,21 +49,13 @@
 
 .headerName {
   font-family: Orbitron-ExtraBold, system-ui;
-  color: #cdd7d3;
+  color: rgba(238, 238, 238, 0.51);
   justify-content: center;
   padding: 0;
   margin: 0;
   display: flex;
   width: 100vw;
   align-items: flex-start;
-}
-
-.bigHeaderName {
-  font-size: 12vw;
-}
-
-.smallHeaderName {
-  font-size: 6vw;
 }
 
 body {
@@ -74,7 +66,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  background: linear-gradient(291deg, #070d2f, #1f0656, #051a1a, #073a38);
+  background: linear-gradient(291deg, #020617, #090d21, #060a46, #0e0062);
   background-size: 800% 800%;
 
   -webkit-animation: DallinGradient 30s ease infinite;
@@ -106,8 +98,8 @@ body {
   padding: 10px;
 }
 .link:hover {
-  color: #00ffd0;
-  text-shadow: 0 0 10px #00ffff;
+  color: #00d9ff;
+  text-shadow: 0 0 10px #cdf8f8;
 }
 
 @-webkit-keyframes DallinGradient {
@@ -180,4 +172,40 @@ h3 {
   font-size: 20px;
   margin: 0;
   padding: 0;
+}
+
+.logo-svg {
+  margin-left: MIN(10px, 2vw);
+  width: 1000px;
+  max-width: 90vw;
+  height: auto;
+  color: #1e3a8a; /* Starting color */
+  animation: svgGradient 20s ease infinite;
+}
+
+/* Target everything in the SVG */
+.logo-svg path,
+.logo-svg line,
+.logo-svg rect {
+  stroke: currentColor;
+  fill: currentColor;
+}
+
+/* Target the specific classes from your SVG */
+.logo-svg .cls-1 {
+  fill: none;
+  stroke: currentColor;
+}
+
+.logo-svg .cls-2 {
+  fill: currentColor;
+  stroke: none;
+}
+
+@keyframes svgGradient {
+  0% { color: #000ef6; }
+  25% { color: #0066ff; }
+  50% { color: #169fff; }
+  75% { color: #00d9ff; }
+  100% { color: #000ef6; }
 }
