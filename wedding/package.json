@@ -1,0 +1,28 @@
+{
+  "name": "wedding-webecke-dev",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json --noEmit && tsc -p tsconfig.server.json --noEmit && vite build",
+    "preview": "npm run build && wrangler pages dev dist --local",
+    "test": "vitest run",
+    "db:migrate:local": "wrangler d1 migrations apply wedding --local",
+    "db:migrate:remote": "wrangler d1 migrations apply wedding --remote"
+  },
+  "dependencies": {
+    "react": "18.3.1",
+    "react-dom": "18.3.1"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "4.20250617.0",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-react": "4.3.4",
+    "typescript": "5.6.3",
+    "vite": "5.4.11",
+    "vitest": "2.1.8",
+    "wrangler": "4.20.5"
+  }
+}

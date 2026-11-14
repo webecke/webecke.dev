@@ -1,0 +1,15 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//wedding.webecke.dev//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+BEGIN:VEVENT
+UID:missouri-reception-2027@wedding.webecke.dev
+DTSTAMP:20261114T000000Z
+DTSTART:20270124T003000Z
+DTEND:20270124T023000Z
+SUMMARY:Sierra & Dallin's Missouri Reception
+LOCATION:Liberty Stake Center\, 6751 NE 70th St\, Kansas City\, MO
+DESCRIPTION:Celebrate Sierra & Dallin! wedding.webecke.dev
+END:VEVENT
+END:VCALENDAR
