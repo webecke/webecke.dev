@@ -13,8 +13,10 @@ export async function verifyTurnstile(
   remoteIp: string | null,
   fetchImpl: typeof fetch = fetch,
 ): Promise<boolean> {
-  if (!token || token.length > 2048) return false;
+  // Local development only: the test secret always passes, even when the
+  // widget itself couldn't load (e.g. offline or behind a proxy).
   if (secret === ALWAYS_PASS_TEST_SECRET) return true;
+  if (!token || token.length > 2048) return false;
   const body = new FormData();
   body.append('secret', secret);
   body.append('response', token);
