@@ -17,7 +17,7 @@ TURNSTILE_SITE_KEY = "0x4AAAAAAGCnGAGLjCOeJjiq"
 # Cloudflare Access team domain, e.g. "https://webecke.cloudflareaccess.com".
 ACCESS_TEAM_DOMAIN = ""
 # Access application's "Application Audience (AUD) Tag".
-ACCESS_AUD = ""
+ACCESS_AUD = "3438d6dc36197e92147fd7e702a892a4f62f49c822e0126477ad8fbecb9031a1"
 
 [[d1_databases]]
 binding = "DB"
