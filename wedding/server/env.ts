@@ -2,7 +2,7 @@ export interface Env {
   DB: D1Database;
   /** Public Turnstile key; served to the page by /api/config. */
   TURNSTILE_SITE_KEY?: string;
-  /** Secret Turnstile key (set as an encrypted secret in Pages). */
+  /** Secret Turnstile key (set as a secret on the Worker in the dashboard). */
   TURNSTILE_SECRET_KEY?: string;
   /** e.g. https://webecke.cloudflareaccess.com */
   ACCESS_TEAM_DOMAIN?: string;

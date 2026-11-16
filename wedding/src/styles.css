@@ -140,7 +140,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .invite-form { display: grid; gap: 12px; font-family: var(--f-ui); }
 fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 legend { padding: 0; }
-.fld { display: grid; gap: 3px; min-width: 0; }
+.fld { display: grid; gap: 3px; min-width: 0; align-content: start; }
 .fld label, .chips legend { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .fld input, .fld select {
   font: 16px var(--f-ui); border: 1px solid #D0D7E8; background: #FFFFFF; color: var(--ink);
@@ -150,7 +150,8 @@ legend { padding: 0; }
 .fld [aria-invalid="true"] { border-color: var(--error); }
 .fld-error { color: var(--error); font-size: 0.82rem; }
 .fld-warn { color: var(--warn); font-size: 0.82rem; }
-.row3 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr) minmax(0, 0.9fr); gap: 8px; }
+.row3 { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr) minmax(0, 0.9fr); gap: 8px; align-items: start; }
+.row-msgs { display: grid; gap: 2px; margin-top: -6px; }
 .row3 select { padding-right: 4px; }
 .chips legend { margin-bottom: 6px; }
 .chip-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
@@ -168,9 +169,8 @@ legend { padding: 0; }
 .turnstile:empty { display: none; }
 .form-error { color: var(--error); font-size: 0.9rem; background: #FBEFF1; border-radius: 10px; padding: 10px 12px; }
 
-.sent { text-align: center; display: grid; gap: 6px; justify-items: center; font-style: italic; color: var(--muted); padding-top: 4px; }
-.sent-title { font-style: normal; font-size: 2.4rem; line-height: 1; color: var(--ink); }
-.sent .btn { margin-top: 8px; font-style: normal; }
+.sent { text-align: center; display: grid; gap: 14px; justify-items: center; align-self: center; padding: 8px 0; }
+.sent-title { font-size: 3.2rem; line-height: 1; color: var(--ink); }
 
 /* ---------- footer ---------- */
 .footer { position: relative; text-align: center; display: grid; gap: 2px; justify-items: center; padding: 56px 16px clamp(150px, 26vw, 260px); }

@@ -1,16 +1,17 @@
 # wedding.webecke.dev
 
 Sierra & Dallin's wedding page: the dates, the registry, and a form where guests
-send a mailing address or email for their invitation.
+send a mailing address (and optionally an email) for their invitation.
 
 - **Page:** Vite + React + TypeScript (`src/`), styled to match the printed invitations.
-- **API:** Cloudflare Pages Functions (`functions/`, logic in `server/`).
+- **Hosting + API:** a Cloudflare Worker with static assets. `dist/` is served as-is;
+  `/api/*` and `/admin*` run `worker/index.ts` (logic in `server/`).
 - **Data:** Cloudflare D1 (SQLite), one table (`migrations/`).
 - **Spam:** Cloudflare Turnstile. **Admin:** `/admin`, locked by Cloudflare Access.
 - **Validation:** `shared/validate.ts` runs in the browser *and* on the server.
 
-It's a separate Cloudflare Pages project from the portfolio at the repo root,
-so the two deploy independently.
+It's a separate Cloudflare project from the portfolio at the repo root, so the
+two deploy independently.
 
 ## Local development
 
@@ -38,36 +39,31 @@ Locally, `/admin` opens without a login; on any real hostname it requires Access
 
 ## One-time Cloudflare setup
 
-Do these once, in this order. After that, every push to `main` deploys.
+Done once, in the Cloudflare dashboard. After that, every push to `main` deploys.
 
-1. **Database.** From `wedding/`: `npx wrangler login`, then `npx wrangler d1 create wedding`.
-   Paste the printed `database_id` into `wrangler.toml`, then run `npm run db:migrate:remote`.
-2. **Turnstile.** Dashboard → Turnstile → *Add widget*. Hostnames: `wedding.webecke.dev`
-   and `wedding-webecke-dev.pages.dev` (for preview links). Mode: *Managed*.
-   Put the **site key** in `wrangler.toml` → `TURNSTILE_SITE_KEY`. Keep the secret key for step 3.
-3. **Pages project.** Dashboard → Workers & Pages → *Create* → *Pages* → *Connect to Git* →
-   `webecke/webecke.dev`.
-   - Project name: `wedding-webecke-dev` · Production branch: `main`
-   - Framework preset: *None* · Build command: `npm run build` · Output: `dist`
-   - **Root directory: `wedding`**
-   - After it's created: *Settings → Variables and Secrets* → add **Secret**
-     `TURNSTILE_SECRET_KEY` (Production and Preview).
+1. **Database.** D1 → *Create database* named `wedding`. Its id goes in `wrangler.toml`.
+   Create the table by pasting `migrations/0001_create_invite_requests.sql` into the
+   database's *Console* (or run `npm run db:migrate:remote` after `npx wrangler login`).
+2. **Turnstile.** Turnstile → *Add widget* for `wedding.webecke.dev`, mode *Managed*.
+   The **site key** goes in `wrangler.toml`; keep the **secret key** for step 4.
+3. **Worker.** Workers & Pages → *Create* → import the `webecke/webecke.dev` repo.
+   - Project name: `wedding-webecke-dev` (must match `name` in `wrangler.toml`)
+   - **Root directory: `wedding`** · Build command: `npm run build` · Deploy command: `npx wrangler deploy`
    - *Settings → Build → Build watch paths*: include `wedding/*` so portfolio changes
-     don't rebuild the wedding site. (In the portfolio project, exclude `wedding/*`.)
-4. **Domain.** In the project: *Custom domains* → `wedding.webecke.dev`. Cloudflare adds the DNS record.
-5. **Admin lock.** Zero Trust → Access → Applications → *Add* → *Self-hosted*.
+     don't rebuild the wedding site.
+4. **Secret.** Worker → *Settings → Variables and Secrets* → add **Secret**
+   `TURNSTILE_SECRET_KEY`. Until it exists the form refuses submissions.
+5. **Domain.** Worker → *Settings → Domains & Routes* → *Add* → *Custom domain* →
+   `wedding.webecke.dev`. Cloudflare creates the DNS record.
+6. **Admin lock.** Zero Trust → Access → Applications → *Add* → *Self-hosted*.
    - Domain `wedding.webecke.dev`, path `admin`
-   - Policy: *Allow*, include the two of your emails (one-time PIN login is fine)
-   - Copy the *Application Audience (AUD) Tag* into `ACCESS_AUD` and your team domain
-     (`https://<team>.cloudflareaccess.com`) into `ACCESS_TEAM_DOMAIN` in `wrangler.toml`.
-6. Commit `wrangler.toml` and push. Then check:
-   - the page loads at https://wedding.webecke.dev
-   - a test submission says "You're on our list!"
-   - https://wedding.webecke.dev/admin asks you to log in and shows the test row
-   - `webecke.dev/wedding` redirects to the subdomain
-
-Until steps 2 and 5 are done the site stays safe: the form refuses submissions
-without a Turnstile secret, and `/admin` stays locked without the Access settings.
+   - Policy: *Allow*, include your two emails (one-time PIN login is fine)
+   - Copy the *Application Audience (AUD) Tag* into `ACCESS_AUD` and the team domain
+     (`https://<team>.cloudflareaccess.com`) into `ACCESS_TEAM_DOMAIN` in `wrangler.toml`,
+     then push. Until then `/admin` stays locked for everyone.
+7. **Check:** the page loads at https://wedding.webecke.dev, a test submission says
+   "You're on our list!", `/admin` asks you to log in and shows the row, and
+   `webecke.dev/wedding` redirects to the subdomain.
 
 ## Data
 

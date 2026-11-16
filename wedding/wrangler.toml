@@ -1,10 +1,15 @@
-# Cloudflare Pages project for wedding.webecke.dev.
-# Because this file sets pages_build_output_dir, Cloudflare treats it as the
-# source of truth for bindings and plain variables (the dashboard fields for
-# those become read-only). Secrets are still set in the dashboard.
+# Cloudflare Worker for wedding.webecke.dev.
+# Static files in dist/ are served directly; /api/* and /admin* run the Worker
+# (worker/index.ts). Plain variables and bindings live here; secrets are set
+# in the dashboard (Worker > Settings > Variables and Secrets).
 name = "wedding-webecke-dev"
+main = "worker/index.ts"
 compatibility_date = "2025-06-01"
-pages_build_output_dir = "dist"
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+run_worker_first = ["/api/*", "/admin", "/admin/*"]
 
 [vars]
 # Public Turnstile site key (Cloudflare dashboard > Turnstile > your widget).
@@ -17,6 +22,8 @@ ACCESS_AUD = ""
 [[d1_databases]]
 binding = "DB"
 database_name = "wedding"
-# Replace with the id printed by `npx wrangler d1 create wedding` (see README).
 database_id = "cc6164b7-d39c-48a0-8f10-bab5943ac3bd"
 migrations_dir = "migrations"
+
+[dev]
+port = 8788

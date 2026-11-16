@@ -121,12 +121,16 @@ export function InviteSection() {
   const envStamps: Array<'barn' | 'stake' | 'rose'> = stamps.length ? stamps : ['rose'];
   const cityLine = [values.city, [values.state, values.postalCode].filter(Boolean).join(' ')].filter(Boolean).join(', ');
 
-  const field = (name: Field, label: ReactNode, input: ReactNode, hint?: string | null) => (
+  const message = (name: Field, hint?: string | null) =>
+    errors[name] ? <p className="fld-error" id={`${uid}-${name}-msg`}>{errors[name]}</p>
+      : hint ? <p className="fld-warn" id={`${uid}-${name}-msg`}>{hint}</p>
+      : null;
+  /** `inline: false` leaves the message out, for fields in the city/state/ZIP row. */
+  const field = (name: Field, label: ReactNode, input: ReactNode, hint?: string | null, inline = true) => (
     <div className={`fld fld-${name}`}>
       <label htmlFor={`${uid}-${name}`}>{label}</label>
       {input}
-      {errors[name] && <p className="fld-error" id={`${uid}-${name}-msg`}>{errors[name]}</p>}
-      {!errors[name] && hint && <p className="fld-warn" id={`${uid}-${name}-msg`}>{hint}</p>}
+      {inline && message(name, hint)}
     </div>
   );
   const aria = (name: Field, hint?: string | null) => ({
@@ -162,9 +166,7 @@ export function InviteSection() {
 
         {status === 'sent' ? (
           <div className="sent" role="status">
-            <p className="script sent-title">You’re on our list!</p>
-            <p>Postmarked with love. Your invitation is on its way soon.</p>
-            <p>Spot a typo? Just send it again with the fix.</p>
+            <p className="script sent-title">Thank you!</p>
             <button type="button" className="btn ghost" onClick={startOver}>Address another envelope</button>
           </div>
         ) : (
@@ -182,16 +184,24 @@ export function InviteSection() {
             <div className="row3">
               {field('city', 'City',
                 <input {...aria('city')} autoComplete="address-level2" maxLength={LIMITS.city}
-                  value={values.city} onChange={set('city')} />)}
+                  value={values.city} onChange={set('city')} />, null, false)}
               {field('state', 'State',
                 <select {...aria('state')} autoComplete="address-level1" value={values.state} onChange={set('state')}>
                   <option value="">—</option>
                   {STATES.map(([code, name]) => <option key={code} value={code}>{code} · {name}</option>)}
-                </select>)}
+                </select>, null, false)}
               {field('postalCode', 'ZIP',
                 <input {...aria('postalCode', zipWarning)} autoComplete="postal-code" inputMode="numeric" maxLength={10}
-                  value={values.postalCode} onChange={set('postalCode')} />, zipWarning)}
+                  value={values.postalCode} onChange={set('postalCode')} />, zipWarning, false)}
             </div>
+            {/* The row's messages go underneath it at full width, so the three boxes stay lined up. */}
+            {(errors.city || errors.state || errors.postalCode || zipWarning) && (
+              <div className="row-msgs">
+                {message('city')}
+                {message('state')}
+                {message('postalCode', zipWarning)}
+              </div>
+            )}
 
             {field('email', <>Email <span className="opt">only if you’d like an invite by email too</span></>,
               <input {...aria('email')} type="email" autoComplete="email" inputMode="email" maxLength={LIMITS.email}
