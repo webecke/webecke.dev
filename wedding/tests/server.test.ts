@@ -115,3 +115,14 @@ describe('admin lock', () => {
     expect(res?.status).toBe(403);
   });
 });
+
+describe('Mountain time', () => {
+  it('shows winter times in MST and summer times in MDT', async () => {
+    const { mountainFriendly, mountainSortable } = await import('../server/time');
+    // 03:30 UTC on Nov 16 is 8:30 pm the evening before in Denver.
+    expect(mountainFriendly('2026-11-16T03:30:00.000Z')).toBe('Nov 15, 2026, 8:30 PM MST');
+    expect(mountainSortable('2026-11-16T03:30:00.000Z')).toBe('2026-11-15 20:30 MST');
+    expect(mountainSortable('2026-07-04T18:05:00.000Z')).toBe('2026-07-04 12:05 MDT');
+    expect(mountainSortable('not a date')).toBe('not a date');
+  });
+});

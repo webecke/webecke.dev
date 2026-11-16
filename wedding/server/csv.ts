@@ -1,4 +1,5 @@
 import type { InviteRow } from './db';
+import { mountainSortable } from './time';
 
 const COLUMNS: Array<[header: string, get: (r: InviteRow) => string | null]> = [
   ['Name', (r) => r.household_name],
@@ -12,7 +13,7 @@ const COLUMNS: Array<[header: string, get: (r: InviteRow) => string | null]> = [
   ['Reception', (r) => r.attending],
   ['Note', (r) => r.note],
   ['ZIP check', (r) => r.zip_warning],
-  ['Submitted', (r) => r.created_at],
+  ['Submitted (Mountain)', (r) => mountainSortable(r.created_at)],
 ];
 
 /** One CSV cell, quoted, with spreadsheet formula injection neutralized. */

@@ -1,4 +1,5 @@
 import type { InviteRow } from './db';
+import { mountainFriendly } from './time';
 
 const esc = (s: string | null | undefined) =>
   (s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!);
@@ -29,7 +30,7 @@ export function renderAdminPage(rows: InviteRow[], all: boolean): string {
           <td>${r.email ? esc(r.email) : '<span class="muted">—</span>'}</td>
           <td>${esc(r.delivery)}</td>
           <td>${r.attending ? esc(RECEPTION[r.attending] ?? r.attending) : '<span class="muted">—</span>'}</td>
-          <td class="when">${esc(r.created_at.slice(0, 16).replace('T', ' '))}</td>
+          <td class="when">${esc(mountainFriendly(r.created_at))}</td>
         </tr>`;
       }).join('');
 
@@ -73,7 +74,7 @@ export function renderAdminPage(rows: InviteRow[], all: boolean): string {
   <div class="stats">${stats.map(([l, n]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}</div>
   <p class="hint">${all ? 'Every submission, newest first, including corrections.' : 'One row per household: when someone resends the form, only their newest submission shows.'}</p>
   <div class="wrap"><table>
-    <thead><tr><th>Name</th><th>Address</th><th>Email</th><th>Invite by</th><th>Reception</th><th>Sent (UTC)</th></tr></thead>
+    <thead><tr><th>Name</th><th>Address</th><th>Email</th><th>Invite by</th><th>Reception</th><th>Sent (Mountain)</th></tr></thead>
     <tbody>${body}</tbody>
   </table></div>
 </main></body></html>`;
