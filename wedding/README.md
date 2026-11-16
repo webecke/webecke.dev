@@ -31,7 +31,7 @@ Locally, `/admin` opens without a login; on any real hostname it requires Access
 | To change | Edit |
 | --- | --- |
 | Dates, venues, times, map links | `src/config.ts` |
-| The Knot link (button is hidden while empty) | `THE_KNOT_URL` in `src/config.ts` |
+| The Knot link (footer button; hidden while empty) | `THE_KNOT_URL` in `src/config.ts` |
 | Calendar times (Google link) | `calendar` on each reception in `src/config.ts` |
 | Calendar files (Apple / Outlook) | `public/*.ics` (keep the times in sync) |
 | Flowers and stamp drawings | the SVG sprite in `index.html` |

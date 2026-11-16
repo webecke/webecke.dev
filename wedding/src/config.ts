@@ -1,7 +1,7 @@
 /** Everything about the wedding the page shows, in one place. */
 
-/** Link to the couple's wedding website on The Knot. Leave empty to hide the button. */
-export const THE_KNOT_URL = '';
+/** The couple's wedding website on The Knot (details, RSVP). Leave empty to hide the button. */
+export const THE_KNOT_URL = 'https://www.theknot.com/sierraanddallin';
 
 export const REGISTRY_URL = 'https://www.amazon.com/wedding/share/sierraanddallin';
 
