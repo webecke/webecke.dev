@@ -31,14 +31,17 @@ export async function insertInvite(
     .run();
 }
 
-/** Newest submission per household (or every submission when `all` is true). */
+/**
+ * Newest submission per household (or every submission when `all` is true),
+ * newest first.
+ */
 export async function listInvites(db: D1Database, all = false): Promise<InviteRow[]> {
   const sql = all
-    ? 'SELECT * FROM invite_requests ORDER BY created_at DESC'
+    ? 'SELECT * FROM invite_requests ORDER BY created_at DESC, id DESC'
     : `SELECT * FROM (
-         SELECT *, ROW_NUMBER() OVER (PARTITION BY dedupe_key ORDER BY created_at DESC) AS rn
+         SELECT *, ROW_NUMBER() OVER (PARTITION BY dedupe_key ORDER BY created_at DESC, id DESC) AS rn
          FROM invite_requests
-       ) WHERE rn = 1 ORDER BY household_name COLLATE NOCASE`;
+       ) WHERE rn = 1 ORDER BY created_at DESC, id DESC`;
   const { results } = await db.prepare(sql).all<InviteRow>();
   return results;
 }
