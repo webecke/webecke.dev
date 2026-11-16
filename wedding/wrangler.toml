@@ -8,7 +8,7 @@ pages_build_output_dir = "dist"
 
 [vars]
 # Public Turnstile site key (Cloudflare dashboard > Turnstile > your widget).
-TURNSTILE_SITE_KEY = ""
+TURNSTILE_SITE_KEY = "0x4AAAAAAGCnGAGLjCOeJjiq"
 # Cloudflare Access team domain, e.g. "https://webecke.cloudflareaccess.com".
 ACCESS_TEAM_DOMAIN = ""
 # Access application's "Application Audience (AUD) Tag".
