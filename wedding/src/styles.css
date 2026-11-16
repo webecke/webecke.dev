@@ -175,7 +175,13 @@ legend { padding: 0; }
 /* ---------- footer ---------- */
 .footer { position: relative; text-align: center; display: grid; gap: 2px; justify-items: center; padding: 56px 16px clamp(150px, 26vw, 260px); }
 .footer .caps { font-size: 0.66rem; color: var(--ink-soft); }
-.footer .knot { margin-bottom: 30px; text-decoration: none; }
+.knot {
+  display: inline-flex; align-items: center; gap: 8px; margin: 18px 0 26px; padding: 10px 20px;
+  border: 1.5px solid var(--lav); border-radius: 999px; background: #FFFFFF; color: var(--lav);
+  font: 600 0.88rem var(--f-ui); letter-spacing: 0.02em; text-decoration: none;
+}
+.knot::after { content: "↗"; font-size: 0.85em; }
+.knot:hover { background: var(--lav-soft); }
 .registry { font-size: 2.4rem; line-height: 1.1; color: var(--ink); text-decoration: none; }
 .registry:hover { color: var(--lav); }
 .with-love { margin-top: 22px; }
