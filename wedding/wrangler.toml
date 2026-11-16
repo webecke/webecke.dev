@@ -18,5 +18,5 @@ ACCESS_AUD = ""
 binding = "DB"
 database_name = "wedding"
 # Replace with the id printed by `npx wrangler d1 create wedding` (see README).
-database_id = "00000000-0000-0000-0000-000000000000"
+database_id = "cc6164b7-d39c-48a0-8f10-bab5943ac3bd"
 migrations_dir = "migrations"
