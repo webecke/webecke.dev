@@ -26,7 +26,7 @@ export function Picture({ art }: { art: ArtName | 'rose' }) {
     );
   }
   return (
-    <svg viewBox="0 0 64 64" aria-hidden="true">
+    <svg viewBox="0 0 120 120" aria-hidden="true">
       <use href={`#${art}`} />
     </svg>
   );

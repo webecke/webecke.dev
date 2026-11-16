@@ -32,7 +32,8 @@ Locally, `/admin` opens without a login; on any real hostname it requires Access
 | --- | --- |
 | Dates, venues, times, map links | `src/config.ts` |
 | The Knot link (button is hidden while empty) | `THE_KNOT_URL` in `src/config.ts` |
-| Calendar files | `public/*.ics` |
+| Calendar times (Google link) | `calendar` on each reception in `src/config.ts` |
+| Calendar files (Apple / Outlook) | `public/*.ics` (keep the times in sync) |
 | Flowers and stamp drawings | the SVG sprite in `index.html` |
 
 ## One-time Cloudflare setup
@@ -70,9 +71,11 @@ without a Turnstile secret, and `/admin` stays locked without the Access setting
 
 ## Data
 
+- Everyone gives a mailing address; an email is optional ("invite by email too").
+  The *Invite by* column reads `mail`, or `both` when they left an email.
 - Every submission is kept; resending the form is how guests fix typos. `/admin`
-  and the CSV show one row per household (newest wins), keyed by email, or by
-  street + ZIP when there's no email. `/admin?all=1` shows everything.
+  and the CSV show one row per household (newest wins), keyed by street + ZIP.
+  `/admin?all=1` shows everything.
 - A ZIP that doesn't match the chosen state shows a "double-check?" note to the guest
   and is flagged in the CSV's *ZIP check* column. It never blocks a submission.
 - Before printing envelopes, consider one batch address check of the CSV (for

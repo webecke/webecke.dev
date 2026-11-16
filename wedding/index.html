@@ -145,63 +145,209 @@
       <g transform="translate(36 16) scale(.12)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
       <g transform="translate(64 16) rotate(20) scale(.6)"><use href="#bud" x="-9" y="-15" width="18" height="30"/></g>
     </symbol>
-    <symbol id="temple" viewBox="0 0 64 64">
-      <rect x="9" y="33" width="46" height="22" fill="#DDC3B4"/>
-      <polygon points="6,34 32,24 58,34" fill="#8A9FC0"/>
-      <rect x="26" y="17" width="12" height="17" fill="#E9DAD0"/>
-      <rect x="27" y="12" width="10" height="6" fill="#F4EFEA"/>
-      <polygon points="28,12 32,1 36,12" fill="#8A9FC0"/>
-      <g fill="#F1D48A"><rect x="14" y="38" width="3" height="7"/><rect x="21" y="38" width="3" height="7"/><rect x="40" y="38" width="3" height="7"/><rect x="47" y="38" width="3" height="7"/><rect x="30" y="22" width="4" height="7"/></g>
-      <path d="M29 55 V47 a3 3 0 0 1 6 0 V55Z" fill="#8F6E5E"/>
-      <path d="M2 56 H62" stroke="#7E9B7E" stroke-width="2"/>
-      <g transform="translate(8 54) scale(.12)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
-      <g transform="translate(56 54) scale(.12)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
-    </symbol>
-    <symbol id="barn" viewBox="0 0 64 64">
-      <rect x="6" y="18" width="12" height="38" fill="#E8E8E4" stroke="#3B404C" stroke-width="1"/>
-      <path d="M6 18 a6 5 0 0 1 12 0Z" fill="#3B404C"/>
-      <polygon points="18,56 18,34 24,24 40,17 56,24 62,34 62,56" fill="#FBFBF8" stroke="#3B404C" stroke-width="1"/>
-      <polyline points="16,35 24,24 40,16.5 56,24 64,35" fill="none" stroke="#3B404C" stroke-width="3" stroke-linejoin="round"/>
-      <rect x="33" y="40" width="14" height="16" fill="#9C7A5B"/>
-      <path d="M33 40 L47 56 M47 40 L33 56" stroke="#FBFBF8" stroke-width="1"/>
-      <rect x="37" y="27" width="6" height="6" fill="#3B404C"/>
-      <path d="M2 56 H62" stroke="#7E9B7E" stroke-width="2"/>
-      <g transform="translate(26 55) scale(.11)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
-      <g transform="translate(55 55) scale(.1)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
-    </symbol>
-    <symbol id="fountain" viewBox="0 0 64 64">
-      <g fill="none" stroke="#7FA2D6" stroke-width="2" stroke-linecap="round">
-        <path d="M32 22 C26 10 18 10 14 24"/><path d="M32 22 C38 10 46 10 50 24"/><path d="M32 22 V8"/>
-        <path d="M24 30 C20 24 14 26 12 34" opacity=".7"/><path d="M40 30 C44 24 50 26 52 34" opacity=".7"/>
+    <!-- Pen-and-watercolor building vignettes (120 x 120). Washes are soft,
+         slightly misregistered fills; ink lines sit on top. -->
+    <filter id="wash" filterUnits="userSpaceOnUse" x="-10" y="-10" width="140" height="140">
+      <feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="3" seed="5" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+      <feGaussianBlur stdDeviation="0.3"/>
+    </filter>
+    <filter id="splash" filterUnits="userSpaceOnUse" x="-10" y="-10" width="140" height="140">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="4" seed="12" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="16"/>
+      <feGaussianBlur stdDeviation="1.1"/>
+    </filter>
+    <filter id="ink" filterUnits="userSpaceOnUse" x="-10" y="-10" width="140" height="140">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="2" seed="2" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="0.55"/>
+    </filter>
+    <linearGradient id="glassL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C8CCB"/><stop offset=".55" stop-color="#B7A6DA"/><stop offset="1" stop-color="#D9C79A"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FBEFCB"/><stop offset="1" stop-color="#EFCB86"/></linearGradient>
+    <linearGradient id="aqua" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E4F1EF"/><stop offset="1" stop-color="#B9D6D3"/></linearGradient>
+    <linearGradient id="skyL" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D9D2F0"/><stop offset="1" stop-color="#EEEAF8"/></linearGradient>
+    <linearGradient id="skyB" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#CFDCF0"/><stop offset="1" stop-color="#ECF1F9"/></linearGradient>
+    <pattern id="brick" width="6" height="3.2" patternUnits="userSpaceOnUse">
+      <rect width="6" height="3.2" fill="#B85C45"/>
+      <rect x="0.4" y="0.3" width="2.4" height="1.2" fill="#A84F3B" opacity=".55"/>
+      <rect x="3.6" y="1.9" width="2" height="1.1" fill="#C96E55" opacity=".5"/>
+      <path d="M0 1.6 H6 M0 3.2 H6 M3 0 V1.6 M0 1.6 V3.2 M6 1.6 V3.2" stroke="#E7C9BC" stroke-width=".3" opacity=".7"/>
+    </pattern>
+    <pattern id="boards" width="4" height="10" patternUnits="userSpaceOnUse">
+      <rect width="4" height="10" fill="#FCFBF8"/>
+      <path d="M3.6 0 V10" stroke="#DADCE0" stroke-width=".45"/>
+    </pattern>
+
+    <!-- A little cluster of greenery and roses to tuck along a building's base. -->
+    <symbol id="shrub" viewBox="-14 -10 28 14">
+      <g filter="url(#wash)">
+        <path d="M-13 3 C-13 -4 -6 -8 -1 -5 C3 -9 11 -6 12 0 C14 2 12 4 10 4 H-11 C-13 4 -13 3 -13 3Z" fill="#9DB39A"/>
+        <path d="M-9 4 C-9 -1 -4 -4 0 -2 C4 -4 9 -1 8 4Z" fill="#7F9A80" opacity=".8"/>
       </g>
-      <ellipse cx="32" cy="34" rx="22" ry="5" fill="#CAD8EE"/>
-      <rect x="28" y="34" width="8" height="14" fill="#C9C3D9"/>
-      <ellipse cx="32" cy="50" rx="26" ry="6" fill="#B7A9E0"/>
-      <ellipse cx="32" cy="48" rx="22" ry="3.6" fill="#DCE6F5"/>
-      <path d="M2 57 H62" stroke="#7E9B7E" stroke-width="2"/>
+      <g transform="translate(-5 -1) scale(.085)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
+      <g transform="translate(5 0) scale(.065)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
     </symbol>
-      <symbol id="stake" viewBox="0 0 64 64">
-      <polygon points="24,30 54,30 61,38 31,38" fill="#C2B293"/>
-      <path d="M24 30 H54" stroke="#F4F1EC" stroke-width=".8"/>
-      <rect x="30" y="38" width="30" height="18" fill="#B65A43"/>
-      <g stroke="#9E4834" stroke-width=".4" opacity=".7"><path d="M30 42 H60 M30 46 H60 M30 50 H60 M30 54 H60"/></g>
-      <rect x="35" y="41" width="3" height="5" fill="#CFE6E2"/>
-      <polygon points="43,40 50.5,33 58,40" fill="#C2B293" stroke="#F4F1EC" stroke-width=".8"/>
-      <rect x="44.5" y="40" width="12" height="16" fill="#B65A43"/>
-      <path d="M47.5 56 V47 a3 3 0 0 1 6 0 V56Z" fill="#6E4234"/>
-      <rect x="4" y="35" width="26" height="21" fill="#B2533D"/>
-      <g stroke="#9E4834" stroke-width=".4" opacity=".7"><path d="M4 39 H30 M4 43 H30 M4 47 H30 M4 51 H30"/></g>
-      <polygon points="2,36 17,26 32,36" fill="#C2B293"/>
-      <polyline points="2,36 17,26 32,36" fill="none" stroke="#F4F1EC" stroke-width="1"/>
-      <path d="M13.5 53 V43 a3.5 3.5 0 0 1 7 0 V53Z" fill="#CFE6E2" stroke="#F4F1EC" stroke-width=".8"/>
-      <path d="M17 39.5 V53" stroke="#F4F1EC" stroke-width=".6"/>
-      <rect x="7" y="17" width="8" height="12" fill="#FBFBF8" stroke="#D5D1C8" stroke-width=".5"/>
-      <rect x="9.6" y="19.5" width="2.8" height="6" rx="1.4" fill="#3B404C"/>
-      <rect x="6" y="16" width="10" height="1.8" fill="#FBFBF8" stroke="#D5D1C8" stroke-width=".4"/>
-      <polygon points="11,1.5 8,16 14,16" fill="#FBFBF8" stroke="#D5D1C8" stroke-width=".5"/>
-      <path d="M2 56 H62" stroke="#7E9B7E" stroke-width="2"/>
-      <g transform="translate(6 55) scale(.11)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
-      <g transform="translate(40 55) scale(.1)"><use href="#rose" x="-50" y="-50" width="100" height="100"/></g>
+
+    <symbol id="temple" viewBox="0 0 120 120">
+      <path d="M60 10 C88 8 112 30 112 60 C114 86 94 106 62 106 C30 108 8 88 8 60 C6 32 30 10 60 10Z" fill="url(#skyL)" filter="url(#splash)" opacity=".95"/>
+      <ellipse cx="60" cy="102" rx="54" ry="6" fill="#B9C9B3" filter="url(#splash)" opacity=".9"/>
+      <!-- washes -->
+      <g filter="url(#wash)" transform="translate(.5 .4)">
+        <!-- tower + spire -->
+        <rect x="52" y="30" width="16" height="18" fill="#F1EBE2"/>
+        <rect x="63" y="30" width="5" height="18" fill="#DDD2C4"/>
+        <polygon points="53.5,19 66.5,19 66.5,30 53.5,30" fill="#EFE8DE"/>
+        <polygon points="64,19 66.5,19 66.5,30 64,30" fill="#D8CCBD"/>
+        <polygon points="53.5,19 56,19 60,1.5" fill="#E6DCCF"/>
+        <polygon points="56,19 64,19 60,1.5" fill="#F3EEE6"/>
+        <polygon points="64,19 66.5,19 60,1.5" fill="#D3C6B6"/>
+        <!-- wings -->
+        <rect x="12" y="68" width="30" height="32" fill="#F2ECE4"/>
+        <rect x="78" y="68" width="30" height="32" fill="#E8DFD3"/>
+        <!-- center block -->
+        <polygon points="42,58 60,45 78,58 78,100 42,100" fill="#F6F1EA"/>
+        <!-- buttresses -->
+        <g fill="#DCD0C1">
+          <path d="M11 100 V68 L13.5 65 L16 68 V100Z"/><path d="M21 100 V70 L23.5 67.5 L26 70 V100Z"/><path d="M31 100 V70 L33.5 67.5 L36 70 V100Z"/>
+          <path d="M84 100 V70 L86.5 67.5 L89 70 V100Z"/><path d="M94 100 V70 L96.5 67.5 L99 70 V100Z"/><path d="M104 100 V68 L106.5 65 L109 68 V100Z"/>
+          <path d="M40 100 V56 L42.5 52 L45 56 V100Z"/><path d="M75 100 V56 L77.5 52 L80 56 V100Z"/>
+        </g>
+        <!-- glass -->
+        <g fill="url(#glassL)">
+          <path d="M16.5 95 V80 Q16.5 75.5 18.5 74 Q20.5 75.5 20.5 80 V95Z"/>
+          <path d="M26.5 95 V80 Q26.5 75.5 28.5 74 Q30.5 75.5 30.5 80 V95Z"/>
+          <path d="M36.5 95 V80 Q36.5 75.5 38 74.2 Q39.5 75.5 39.5 80 V95Z"/>
+          <path d="M80.5 95 V80 Q80.5 75.5 82 74.2 Q83.5 75.5 83.5 80 V95Z"/>
+          <path d="M89.5 95 V80 Q89.5 75.5 91.5 74 Q93.5 75.5 93.5 80 V95Z"/>
+          <path d="M99.5 95 V80 Q99.5 75.5 101.5 74 Q103.5 75.5 103.5 80 V95Z"/>
+          <path d="M55 77 V62 Q55 56 60 53.5 Q65 56 65 62 V77Z"/>
+          <path d="M57.8 44 V37.5 Q57.8 34.5 60 33.2 Q62.2 34.5 62.2 37.5 V44Z"/>
+          <path d="M58.2 28.5 V23.5 Q58.2 21.6 60 20.8 Q61.8 21.6 61.8 23.5 V28.5Z"/>
+        </g>
+        <path d="M54.5 100 V88 Q54.5 82 60 80 Q65.5 82 65.5 88 V100Z" fill="#8E7FA8"/>
+      </g>
+      <!-- ink -->
+      <g filter="url(#ink)" fill="none" stroke="#34426A" stroke-width=".7" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M60 1.5 L53.5 19 M60 1.5 L56 19 M60 1.5 L64 19 M60 1.5 L66.5 19"/>
+        <path d="M52.5 19 H67.5 M53.5 19 V30 M66.5 19 V30 M56 19 V30 M64 19 V30 M52 30 H68"/>
+        <path d="M52 30 V46.5 M68 30 V46.5"/>
+        <path d="M42 58 L60 45 L78 58"/>
+        <path d="M41 58.5 L60 44.2 L79 58.5" stroke-width=".45"/>
+        <path d="M12 68 H40 M80 68 H108 M12 70 H40 M80 70 H108" stroke-width=".5"/>
+        <path d="M11 100 V68 L13.5 65 L16 68 V100 M21 100 V70 L23.5 67.5 L26 70 V100 M31 100 V70 L33.5 67.5 L36 70 V100"/>
+        <path d="M84 100 V70 L86.5 67.5 L89 70 V100 M94 100 V70 L96.5 67.5 L99 70 V100 M104 100 V68 L106.5 65 L109 68 V100"/>
+        <path d="M40 100 V56 L42.5 52 L45 56 V100 M75 100 V56 L77.5 52 L80 56 V100"/>
+        <path d="M108 70 V100 M12 70 V100" stroke-width=".5"/>
+        <path d="M16.5 95 V80 Q16.5 75.5 18.5 74 Q20.5 75.5 20.5 80 V95Z M26.5 95 V80 Q26.5 75.5 28.5 74 Q30.5 75.5 30.5 80 V95Z M36.5 95 V80 Q36.5 75.5 38 74.2 Q39.5 75.5 39.5 80 V95Z" stroke-width=".5"/>
+        <path d="M80.5 95 V80 Q80.5 75.5 82 74.2 Q83.5 75.5 83.5 80 V95Z M89.5 95 V80 Q89.5 75.5 91.5 74 Q93.5 75.5 93.5 80 V95Z M99.5 95 V80 Q99.5 75.5 101.5 74 Q103.5 75.5 103.5 80 V95Z" stroke-width=".5"/>
+        <path d="M16.5 86 H20.5 M26.5 86 H30.5 M36.5 86 H39.5 M80.5 86 H83.5 M89.5 86 H93.5 M99.5 86 H103.5" stroke-width=".35"/>
+        <path d="M55 77 V62 Q55 56 60 53.5 Q65 56 65 62 V77Z M60 54 V77 M55 66 H65" stroke-width=".55"/>
+        <path d="M57.8 44 V37.5 Q57.8 34.5 60 33.2 Q62.2 34.5 62.2 37.5 V44Z" stroke-width=".5"/>
+        <path d="M58.2 28.5 V23.5 Q58.2 21.6 60 20.8 Q61.8 21.6 61.8 23.5 V28.5Z" stroke-width=".45"/>
+        <path d="M54.5 100 V88 Q54.5 82 60 80 Q65.5 82 65.5 88 V100 M60 80.5 V100"/>
+        <path d="M4 100.2 H116" stroke="#6F8C70"/>
+      </g>
+      <circle cx="60" cy="1.6" r="1" fill="#D9B45A"/>
+      <use href="#shrub" x="2" y="91" width="24" height="12"/>
+      <use href="#shrub" x="94" y="91" width="24" height="12"/>
+      <use href="#shrub" x="34" y="94" width="16" height="8"/>
+      <use href="#shrub" x="70" y="94" width="16" height="8"/>
+    </symbol>
+
+    <symbol id="barn" viewBox="0 0 120 120">
+      <path d="M60 12 C90 10 112 32 112 62 C112 88 92 106 60 106 C28 106 8 88 8 62 C8 32 30 14 60 12Z" fill="url(#skyB)" filter="url(#splash)" opacity=".95"/>
+      <!-- Mount Timpanogos behind -->
+      <g filter="url(#wash)">
+        <path d="M3 76 L9 58 L15 45 L20 51 L26 49 L40 44 L60 40 L80 44 L90 46 L96 42 L103 34 L109 46 L114 56 L117 70 V84 H3Z" fill="#9FADCF" opacity=".7"/>
+        <path d="M11 53 L15 45 L18.5 49.5 L16 48.5 L14 51.5 L12.5 50Z M98 40 L103 34 L107 41 L104.5 39.8 L102.5 42.5 L100.5 40.5Z" fill="#FFFFFF"/>
+      </g>
+      <ellipse cx="60" cy="102" rx="54" ry="6" fill="#B9C9B3" filter="url(#splash)" opacity=".9"/>
+      <g filter="url(#wash)" transform="translate(.5 .4)">
+        <rect x="6" y="70" width="19" height="30" fill="url(#boards)"/>
+        <polygon points="24,58 60,30 96,58 96,100 24,100" fill="url(#boards)"/>
+        <polygon points="84,48 96,58 96,100 84,100" fill="#E9EAEE" opacity=".6"/>
+        <polygon points="3,72 25,61 25,66 5,75" fill="#4A5068"/>
+        <path d="M17 60 L60 25.5 L103 60 L100 62.5 L60 30.5 L20 62.5Z" fill="#3F4560"/>
+        <rect x="55" y="15" width="10" height="11" fill="#FCFBF8"/>
+        <polygon points="53,16.5 60,10 67,16.5" fill="#3F4560"/>
+        <rect x="46" y="72" width="28" height="28" fill="url(#glow)"/>
+        <rect x="54" y="42" width="12" height="12" fill="url(#glow)"/>
+        <rect x="10" y="80" width="10" height="11" fill="url(#glow)"/>
+      </g>
+      <g filter="url(#ink)" fill="none" stroke="#34426A" stroke-width=".65" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M24 60 V100 M96 60 V100 M6 74 V100 M25 66 V100"/>
+        <path d="M17 60 L60 25.5 L103 60 L100 62.5 L60 30.5 L20 62.5Z" stroke-width=".55"/>
+        <path d="M3 72 L25 61 M5 75 L25 66"/>
+        <path d="M55 26 V15 H65 V26 M53 16.5 L60 10 L67 16.5 M57 17.5 V24 M59 17.5 V24 M61 17.5 V24 M63 17.5 V24" stroke-width=".45"/>
+        <path d="M60 10 V5.5 M57.5 6.5 H62.5 M62.5 6.5 L61.2 5.6 M62.5 6.5 L61.2 7.4" stroke-width=".45"/>
+        <g stroke="#262B3B" stroke-width="1.2">
+          <rect x="46" y="72" width="28" height="28"/>
+          <path d="M60 72 V100"/>
+        </g>
+        <path d="M46 81.3 H74 M46 90.6 H74 M53 72 V100 M67 72 V100" stroke="#262B3B" stroke-width=".5"/>
+        <g stroke="#262B3B" stroke-width="1"><rect x="54" y="42" width="12" height="12"/><path d="M60 42 V54 M54 48 H66"/></g>
+        <g stroke="#262B3B" stroke-width=".8"><rect x="10" y="80" width="10" height="11"/><path d="M15 80 V91 M10 85.5 H20"/></g>
+        <path d="M42 68 C42 64.5 44.5 64.5 45 66.2 M78 68 C78 64.5 75.5 64.5 75 66.2" stroke="#262B3B" stroke-width=".7"/>
+        <path d="M26 61 Q43 70 60 63 Q77 70 94 61" stroke="#5A6078" stroke-width=".35"/>
+        <path d="M4 100.2 H116" stroke="#6F8C70"/>
+      </g>
+      <g fill="#F2C76B">
+        <circle cx="31" cy="64.4" r=".75"/><circle cx="37" cy="66.4" r=".75"/><circle cx="43" cy="66.9" r=".75"/><circle cx="49" cy="66" r=".75"/><circle cx="55" cy="64.3" r=".75"/>
+        <circle cx="65" cy="64.3" r=".75"/><circle cx="71" cy="66" r=".75"/><circle cx="77" cy="66.9" r=".75"/><circle cx="83" cy="66.4" r=".75"/><circle cx="89" cy="64.4" r=".75"/>
+      </g>
+      <use href="#shrub" x="26" y="91" width="22" height="11"/>
+      <use href="#shrub" x="72" y="91" width="22" height="11"/>
+      <use href="#shrub" x="98" y="92" width="18" height="9"/>
+      <use href="#shrub" x="2" y="93" width="14" height="7"/>
+    </symbol>
+
+    <symbol id="stake" viewBox="0 0 120 120">
+      <path d="M60 12 C90 10 112 32 112 62 C112 88 92 106 60 106 C28 106 8 88 8 62 C8 32 30 14 60 12Z" fill="url(#skyB)" filter="url(#splash)" opacity=".95"/>
+      <ellipse cx="60" cy="102" rx="54" ry="6" fill="#B9C9B3" filter="url(#splash)" opacity=".9"/>
+      <g filter="url(#wash)" transform="translate(.5 .4)">
+        <!-- steeple -->
+        <rect x="20" y="48" width="12" height="24" fill="#FCFBF8"/>
+        <rect x="21.5" y="38" width="9" height="10" fill="#F5F4F0"/>
+        <polygon points="21.5,38 26,3 30.5,38" fill="#FCFBF8"/>
+        <polygon points="26,3 30.5,38 27.6,38" fill="#E3E5EA"/>
+        <!-- roofs -->
+        <polygon points="2,74 8,67 32,67 32,74" fill="#BDB49F"/>
+        <polygon points="78,72 85,64.5 110,64.5 116,72" fill="#BDB49F"/>
+        <!-- walls -->
+        <rect x="5" y="74" width="27" height="26" fill="url(#brick)"/>
+        <rect x="80" y="72" width="33" height="28" fill="url(#brick)"/>
+        <polygon points="32,62 56,44 80,62 80,100 32,100" fill="url(#brick)"/>
+        <polygon points="68,53 80,62 80,100 68,100" fill="#7A2E20" opacity=".18"/>
+        <!-- glass -->
+        <g fill="url(#aqua)">
+          <rect x="36" y="66" width="4" height="26"/><rect x="72" y="66" width="4" height="26"/>
+          <rect x="9" y="80" width="5" height="9"/><rect x="18" y="80" width="5" height="9"/>
+          <rect x="85" y="78" width="5" height="9"/><rect x="94" y="78" width="5" height="9"/><rect x="103" y="78" width="5" height="9"/>
+          <rect x="49" y="84" width="14" height="16"/>
+          <circle cx="56" cy="56" r="3"/>
+        </g>
+        <!-- portico -->
+        <polygon points="43,80 56,71 69,80" fill="#FCFBF8"/>
+        <rect x="44" y="80" width="2" height="20" fill="#FCFBF8"/><rect x="66" y="80" width="2" height="20" fill="#FCFBF8"/>
+      </g>
+      <g filter="url(#ink)" fill="none" stroke="#34426A" stroke-width=".6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M20 72 V48 H32 V72 M21.5 48 V38 H30.5 V48 M20.5 38 H31.5 M19.5 48 H32.5"/>
+        <path d="M21.5 38 L26 3 L30.5 38 M27.6 38 L26 3"/>
+        <path d="M23.5 46 V40.5 Q23.5 39.5 24.5 39.5 Q25.5 39.5 25.5 40.5 V46 M26.5 46 V40.5 Q26.5 39.5 27.5 39.5 Q28.5 39.5 28.5 40.5 V46" stroke-width=".4"/>
+        <path d="M24 52 V68 M28 52 V68" stroke-width=".4"/>
+        <path d="M2 74 L8 67 H32 M78 72 L85 64.5 H110 L116 72"/>
+        <path d="M5 74 V100 M113 72 V100 M80 72 V100 M32 64 V100"/>
+        <path d="M31 62.6 L56 43.6 L81 62.6" stroke="#FCFBF8" stroke-width="1.6"/>
+        <path d="M31 62.6 L56 43.6 L81 62.6 M32 63.8 L56 45.6 L80 63.8" stroke-width=".4"/>
+        <circle cx="56" cy="56" r="3" stroke-width=".45"/>
+        <path d="M36 66 H40 V92 H36Z M72 66 H76 V92 H72Z M9 80 H14 V89 H9Z M18 80 H23 V89 H18Z M85 78 H90 V87 H85Z M94 78 H99 V87 H94Z M103 78 H108 V87 H103Z" stroke-width=".45"/>
+        <path d="M43 80 L56 71 L69 80Z M44 80 V100 M46 80 V100 M66 80 V100 M68 80 V100" stroke-width=".45"/>
+        <path d="M49 84 H63 V100 M49 84 V100 M56 84 V100" stroke-width=".45"/>
+        <path d="M4 100.2 H116" stroke="#6F8C70"/>
+      </g>
+      <use href="#shrub" x="2" y="92" width="20" height="10"/>
+      <use href="#shrub" x="30" y="93" width="14" height="7"/>
+      <use href="#shrub" x="70" y="93" width="14" height="7"/>
+      <use href="#shrub" x="96" y="91" width="22" height="11"/>
     </symbol>
   </defs>
 </svg>

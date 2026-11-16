@@ -18,7 +18,7 @@ const req = (body: unknown, headers: Record<string, string> = {}) =>
     method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: typeof body === 'string' ? body : JSON.stringify(body),
   });
 
-const valid = { householdName: 'The Jensens', delivery: 'mail', street1: '1 Main St', city: 'Lindon', state: 'UT', postalCode: '84042', turnstileToken: 'tok' };
+const valid = { householdName: 'The Jensens', street1: '1 Main St', city: 'Lindon', state: 'UT', postalCode: '84042', turnstileToken: 'tok' };
 const siteverify = (success: boolean) => (async () => new Response(JSON.stringify({ success }))) as unknown as typeof fetch;
 
 describe('POST /api/invite', () => {

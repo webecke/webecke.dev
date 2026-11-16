@@ -12,10 +12,14 @@ export type Delivery = (typeof DELIVERIES)[number];
 export type Attending = (typeof ATTENDING)[number];
 
 export type Field =
-  | 'householdName' | 'delivery' | 'email' | 'street1' | 'street2'
+  | 'householdName' | 'email' | 'street1' | 'street2'
   | 'city' | 'state' | 'postalCode' | 'attending' | 'note';
 
-/** A request that passed validation, trimmed and normalized. */
+/**
+ * A request that passed validation, trimmed and normalized. `delivery` is
+ * derived: "both" when they gave an email, otherwise "mail". ("email" alone
+ * is still a valid stored value from older submissions.)
+ */
 export interface CleanInvite {
   householdName: string;
   delivery: Delivery;
@@ -40,8 +44,6 @@ export const LIMITS = { householdName: 120, email: 254, street: 120, city: 80, n
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const ZIP_RE = /^(\d{5})(?:-?(\d{4}))?$/;
 
-export const wantsMail = (d: Delivery) => d === 'mail' || d === 'both';
-export const wantsEmail = (d: Delivery) => d === 'email' || d === 'both';
 
 /** Trim and collapse inner whitespace; empty becomes null. */
 function clean(v: unknown): string | null {
@@ -59,50 +61,37 @@ export function validateInvite(raw: unknown): ValidationResult {
   if (!householdName) errors.householdName = 'Please add the name(s) for the envelope.';
   else if (householdName.length > LIMITS.householdName) errors.householdName = `Please keep this under ${LIMITS.householdName} characters.`;
 
-  const delivery = (DELIVERIES as readonly string[]).includes(input.delivery as string)
-    ? (input.delivery as Delivery)
-    : null;
-  if (!delivery) errors.delivery = 'Choose mail, email, or both.';
-
-  let email: string | null = null;
-  let street1: string | null = null;
-  let street2: string | null = null;
-  let city: string | null = null;
-  let state: string | null = null;
+  // One form: everyone gives a mailing address; an email is optional and
+  // means "send it by email too".
+  const street1 = clean(input.street1);
+  const street2 = clean(input.street2);
+  const city = clean(input.city);
+  const state = clean(input.state)?.toUpperCase() ?? null;
+  const zip = clean(input.postalCode)?.replace(/\s/g, '') ?? null;
   let postalCode: string | null = null;
 
-  if (delivery && wantsEmail(delivery)) {
-    email = clean(input.email)?.toLowerCase() ?? null;
-    if (!email) errors.email = 'Please add your email.';
-    else if (email.length > LIMITS.email || !EMAIL_RE.test(email)) errors.email = 'That email doesn’t look quite right.';
-  }
+  if (!street1) errors.street1 = 'Please add your street address.';
+  else if (street1.length > LIMITS.street) errors.street1 = 'That street address is too long.';
+  if (street2 && street2.length > LIMITS.street) errors.street2 = 'That line is too long.';
+  if (!city) errors.city = 'Please add your city.';
+  else if (city.length > LIMITS.city) errors.city = 'That city name is too long.';
+  if (!state) errors.state = 'Please choose your state.';
+  else if (!STATE_CODES.has(state)) errors.state = 'Please choose a state from the list.';
 
-  if (delivery && wantsMail(delivery)) {
-    street1 = clean(input.street1);
-    street2 = clean(input.street2);
-    city = clean(input.city);
-    state = clean(input.state)?.toUpperCase() ?? null;
-    const zip = clean(input.postalCode)?.replace(/\s/g, '') ?? null;
-
-    if (!street1) errors.street1 = 'Please add your street address.';
-    else if (street1.length > LIMITS.street) errors.street1 = 'That street address is too long.';
-    if (street2 && street2.length > LIMITS.street) errors.street2 = 'That line is too long.';
-    if (!city) errors.city = 'Please add your city.';
-    else if (city.length > LIMITS.city) errors.city = 'That city name is too long.';
-    if (!state) errors.state = 'Please choose your state.';
-    else if (!STATE_CODES.has(state)) errors.state = 'Please choose a state from the list.';
-
-    const m = zip ? ZIP_RE.exec(zip) : null;
-    if (!zip) errors.postalCode = 'Please add your ZIP code.';
-    else if (!m) errors.postalCode = 'ZIP codes are 5 digits, like 84042.';
-    else {
-      postalCode = m[2] ? `${m[1]}-${m[2]}` : m[1];
-      if (state && STATE_CODES.has(state)) {
-        const actual = zipStateMismatch(postalCode, state);
-        if (actual) warnings.postalCode = `That ZIP usually belongs to ${stateName(actual)}. Mind double-checking?`;
-      }
+  const m = zip ? ZIP_RE.exec(zip) : null;
+  if (!zip) errors.postalCode = 'Please add your ZIP code.';
+  else if (!m) errors.postalCode = 'ZIP codes are 5 digits, like 84042.';
+  else {
+    postalCode = m[2] ? `${m[1]}-${m[2]}` : m[1];
+    if (state && STATE_CODES.has(state)) {
+      const actual = zipStateMismatch(postalCode, state);
+      if (actual) warnings.postalCode = `That ZIP usually belongs to ${stateName(actual)}. Mind double-checking?`;
     }
   }
+
+  const email = clean(input.email)?.toLowerCase() ?? null;
+  if (email && (email.length > LIMITS.email || !EMAIL_RE.test(email))) errors.email = 'That email doesn’t look quite right.';
+  const delivery: Delivery = email ? 'both' : 'mail';
 
   let attending: Attending | null = null;
   if (input.attending != null && input.attending !== '') {
@@ -113,7 +102,7 @@ export function validateInvite(raw: unknown): ValidationResult {
   const note = clean(input.note);
   if (note && note.length > LIMITS.note) errors.note = `Please keep notes under ${LIMITS.note} characters.`;
 
-  if (Object.keys(errors).length > 0 || !householdName || !delivery) return { ok: false, errors, warnings };
+  if (Object.keys(errors).length > 0 || !householdName) return { ok: false, errors, warnings };
   return {
     ok: true,
     warnings,
@@ -123,10 +112,10 @@ export function validateInvite(raw: unknown): ValidationResult {
 
 /**
  * Which household a submission belongs to, so resubmissions replace earlier
- * ones in the admin view: the email when there is one, otherwise the address.
+ * ones in the admin view. Keyed on the address (everyone gives one), so
+ * adding an email later still counts as the same household.
  */
 export function dedupeKey(v: CleanInvite): string {
-  if (v.email) return `email:${v.email}`;
   const norm = (s: string | null) => (s ?? '').toLowerCase().replace(/[^a-z0-9]/g, '');
   return `addr:${norm(v.street1)}|${norm(v.street2)}|${(v.postalCode ?? '').slice(0, 5)}`;
 }

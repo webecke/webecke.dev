@@ -1,5 +1,33 @@
-import { RECEPTIONS, SEALING, type WeddingEvent } from '../config';
+import { useEffect, useRef } from 'react';
+import { RECEPTIONS, SEALING, googleCalendarUrl, type CalendarEvent, type WeddingEvent } from '../config';
 import { Picture } from './Art';
+
+/** "Add to calendar" opens a tiny menu: Google, or a file for Apple/Outlook. */
+function CalendarMenu({ event }: { event: CalendarEvent }) {
+  const ref = useRef<HTMLDetailsElement>(null);
+  useEffect(() => {
+    const close = (e: Event) => {
+      const el = ref.current;
+      if (!el?.open) return;
+      if (e instanceof KeyboardEvent ? e.key === 'Escape' : !el.contains(e.target as Node)) el.open = false;
+    };
+    document.addEventListener('pointerdown', close);
+    document.addEventListener('keydown', close);
+    return () => {
+      document.removeEventListener('pointerdown', close);
+      document.removeEventListener('keydown', close);
+    };
+  }, []);
+  return (
+    <details className="cal" ref={ref}>
+      <summary>Add to calendar</summary>
+      <div className="cal-menu">
+        <a href={googleCalendarUrl(event)} target="_blank" rel="noopener noreferrer">Google Calendar</a>
+        <a href={event.icsUrl} download>Apple / Outlook</a>
+      </div>
+    </details>
+  );
+}
 
 function Stamp({ event }: { event: WeddingEvent }) {
   return (
@@ -15,10 +43,10 @@ function Stamp({ event }: { event: WeddingEvent }) {
       <p className="caps event-where">{event.where}</p>
       <p className="event-links">
         <a href={event.mapUrl} target="_blank" rel="noopener noreferrer">Map</a>
-        {event.calendarUrl && (
+        {event.calendar && (
           <>
             <span aria-hidden="true"> · </span>
-            <a href={event.calendarUrl} download>Add to calendar</a>
+            <CalendarMenu event={event.calendar} />
           </>
         )}
       </p>

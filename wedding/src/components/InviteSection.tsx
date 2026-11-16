@@ -1,8 +1,8 @@
 import { useId, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { STATES } from '../../shared/states';
 import {
-  LIMITS, validateInvite, wantsEmail, wantsMail,
-  type Attending, type Delivery, type Field, type Messages,
+  LIMITS, validateInvite,
+  type Attending, type Field, type Messages,
 } from '../../shared/validate';
 import { useTurnstile } from '../turnstile';
 import { Picture, Sprig } from './Art';
@@ -18,19 +18,19 @@ interface Values {
 }
 const EMPTY: Values = { householdName: '', email: '', street1: '', street2: '', city: '', state: '', postalCode: '' };
 
-const DELIVERY_OPTIONS: Array<[Delivery, string]> = [['mail', 'By mail'], ['email', 'By email'], ['both', 'Both']];
-const RECEPTION_OPTIONS: Array<[Attending, string, Array<'barn' | 'stake' | 'rose'>]> = [
+type Art = 'barn' | 'stake' | 'unsure';
+/** Each reception choice, the picture on its button, and the stamp(s) it puts on the envelope. */
+const RECEPTION_OPTIONS: Array<[Attending, string, Art[]]> = [
   ['utah', 'Utah', ['barn']],
   ['missouri', 'Missouri', ['stake']],
   ['both', 'Both', ['barn', 'stake']],
-  ['unsure', 'Not sure', ['rose']],
+  ['unsure', 'Not sure', ['unsure']],
 ];
 
 type Status = 'editing' | 'sending' | 'sent';
 
 export function InviteSection() {
   const [values, setValues] = useState<Values>(EMPTY);
-  const [delivery, setDelivery] = useState<Delivery>('mail');
   const [attending, setAttending] = useState<Attending | null>(null);
   const [errors, setErrors] = useState<Messages>({});
   const [zipWarning, setZipWarning] = useState<string | null>(null);
@@ -43,11 +43,11 @@ export function InviteSection() {
   const turnstile = useTurnstile();
   const uid = useId();
 
-  const payload = () => ({ ...values, delivery, attending });
+  const payload = () => ({ ...values, attending });
 
-  const recheck = (next: Values, nextDelivery = delivery) => {
+  const recheck = (next: Values) => {
     if (!triedSubmit) return;
-    const r = validateInvite({ ...next, delivery: nextDelivery, attending });
+    const r = validateInvite({ ...next, attending });
     setErrors(r.ok ? {} : r.errors);
   };
 
@@ -57,8 +57,6 @@ export function InviteSection() {
     if (field === 'postalCode' || field === 'state') { setZipWarning(null); setZipConfirmed(false); }
     recheck(next);
   };
-
-  const chooseDelivery = (d: Delivery) => { setDelivery(d); recheck(values, d); };
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -117,12 +115,13 @@ export function InviteSection() {
     requestAnimationFrame(() => firstField.current?.focus());
   }
 
-  const showMail = wantsMail(delivery);
-  const showEmail = wantsEmail(delivery);
-  const stamps = RECEPTION_OPTIONS.find(([v]) => v === attending)?.[2] ?? ['rose'];
+  // The envelope wears a rose stamp until they pick a reception (and for "not sure").
+  const picked = RECEPTION_OPTIONS.find(([v]) => v === attending)?.[2] ?? [];
+  const stamps = picked.filter((a): a is 'barn' | 'stake' => a !== 'unsure');
+  const envStamps: Array<'barn' | 'stake' | 'rose'> = stamps.length ? stamps : ['rose'];
   const cityLine = [values.city, [values.state, values.postalCode].filter(Boolean).join(' ')].filter(Boolean).join(', ');
 
-  const field = (name: Field, label: string, input: ReactNode, hint?: string | null) => (
+  const field = (name: Field, label: ReactNode, input: ReactNode, hint?: string | null) => (
     <div className={`fld fld-${name}`}>
       <label htmlFor={`${uid}-${name}`}>{label}</label>
       {input}
@@ -140,31 +139,22 @@ export function InviteSection() {
     <section className="invite" aria-labelledby="invite-title">
       <div className="invite-title">
         <h2 id="invite-title" className="script">Want an invitation?</h2>
-        <p>Address your envelope and we’ll send it</p>
       </div>
 
       <div className="invite-grid">
         <div className="envelope" aria-hidden="true">
-          <div className="env-return caps"><span className="script">Sierra &amp; Dallin</span>Pleasant Grove, Utah</div>
-          <div className="env-stamps" key={stamps.join('-')}>
-            {stamps.map((art) => (
+          <div className="env-return caps"><span className="script">Sierra &amp; Dallin</span>Lehi, Utah</div>
+          <div className="env-stamps" key={envStamps.join('-')}>
+            {envStamps.map((art) => (
               <div className="env-stamp" key={art}><div><Picture art={art} /></div></div>
             ))}
           </div>
           <div className="env-to">
             <div className="script env-name">{values.householdName || 'Your name here'}</div>
-            {showMail ? (
-              <>
-                <div className="caps">{values.street1 || 'Street address'}</div>
-                {values.street2 && <div className="caps">{values.street2}</div>}
-                <div className="caps">{cityLine || 'City, State ZIP'}</div>
-              </>
-            ) : (
-              <>
-                <div className="caps env-email">{values.email || 'your@email.com'}</div>
-                <div className="caps">delivered by email</div>
-              </>
-            )}
+            <div className="caps">{values.street1 || 'Street address'}</div>
+            {values.street2 && <div className="caps">{values.street2}</div>}
+            <div className="caps">{cityLine || 'City, State ZIP'}</div>
+            {values.email.trim() && <div className="env-email">&amp; by email · {values.email.trim()}</div>}
           </div>
           <Sprig className="env-sprig" />
           {status === 'sent' && <div className="env-postmark">Received<br />with love<br />· S &amp; D ·</div>}
@@ -179,46 +169,33 @@ export function InviteSection() {
           </div>
         ) : (
           <form className="invite-form" onSubmit={submit} noValidate>
-            <fieldset className="seg">
-              <legend>How should we send it?</legend>
-              {DELIVERY_OPTIONS.map(([value, label]) => (
-                <button key={value} type="button" aria-pressed={delivery === value} onClick={() => chooseDelivery(value)}>
-                  {label}
-                </button>
-              ))}
-            </fieldset>
-
             {field('householdName', 'Name(s) on the envelope',
               <input ref={firstField} {...aria('householdName')} autoComplete="name" maxLength={LIMITS.householdName}
                 placeholder="The Jensen Family" value={values.householdName} onChange={set('householdName')} />)}
 
-            {showEmail && field('email', 'Email',
+            {field('street1', 'Street address',
+              <input {...aria('street1')} autoComplete="address-line1" maxLength={LIMITS.street}
+                value={values.street1} onChange={set('street1')} />)}
+            {field('street2', 'Apt, suite, unit (optional)',
+              <input {...aria('street2')} autoComplete="address-line2" maxLength={LIMITS.street}
+                value={values.street2} onChange={set('street2')} />)}
+            <div className="row3">
+              {field('city', 'City',
+                <input {...aria('city')} autoComplete="address-level2" maxLength={LIMITS.city}
+                  value={values.city} onChange={set('city')} />)}
+              {field('state', 'State',
+                <select {...aria('state')} autoComplete="address-level1" value={values.state} onChange={set('state')}>
+                  <option value="">—</option>
+                  {STATES.map(([code, name]) => <option key={code} value={code}>{code} · {name}</option>)}
+                </select>)}
+              {field('postalCode', 'ZIP',
+                <input {...aria('postalCode', zipWarning)} autoComplete="postal-code" inputMode="numeric" maxLength={10}
+                  value={values.postalCode} onChange={set('postalCode')} />, zipWarning)}
+            </div>
+
+            {field('email', <>Email <span className="opt">only if you’d like an invite by email too</span></>,
               <input {...aria('email')} type="email" autoComplete="email" inputMode="email" maxLength={LIMITS.email}
                 value={values.email} onChange={set('email')} />)}
-
-            {showMail && (
-              <>
-                {field('street1', 'Street address',
-                  <input {...aria('street1')} autoComplete="address-line1" maxLength={LIMITS.street}
-                    value={values.street1} onChange={set('street1')} />)}
-                {field('street2', 'Apt, suite, unit (optional)',
-                  <input {...aria('street2')} autoComplete="address-line2" maxLength={LIMITS.street}
-                    value={values.street2} onChange={set('street2')} />)}
-                <div className="row3">
-                  {field('city', 'City',
-                    <input {...aria('city')} autoComplete="address-level2" maxLength={LIMITS.city}
-                      value={values.city} onChange={set('city')} />)}
-                  {field('state', 'State',
-                    <select {...aria('state')} autoComplete="address-level1" value={values.state} onChange={set('state')}>
-                      <option value="">—</option>
-                      {STATES.map(([code, name]) => <option key={code} value={code}>{code} · {name}</option>)}
-                    </select>)}
-                  {field('postalCode', 'ZIP',
-                    <input {...aria('postalCode', zipWarning)} autoComplete="postal-code" inputMode="numeric" maxLength={10}
-                      value={values.postalCode} onChange={set('postalCode')} />, zipWarning)}
-                </div>
-              </>
-            )}
 
             <fieldset className="chips">
               <legend>Which reception you’ll likely make it to</legend>
@@ -226,7 +203,9 @@ export function InviteSection() {
                 {RECEPTION_OPTIONS.map(([value, label, arts]) => (
                   <button key={value} type="button" aria-pressed={attending === value}
                     onClick={() => setAttending(attending === value ? null : value)}>
-                    <span className="chip-art">{arts.map((a) => <Picture key={a} art={a} />)}</span>
+                    <span className="chip-art">
+                      {arts.map((a) => (a === 'unsure' ? <span key={a} className="chip-q" aria-hidden="true">?</span> : <Picture key={a} art={a} />))}
+                    </span>
                     {label}
                   </button>
                 ))}

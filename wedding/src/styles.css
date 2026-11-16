@@ -72,12 +72,23 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .event-utah .stamp { transform: rotate(-2deg); }
 .event-missouri .stamp { transform: rotate(2deg); }
 .stamp-in { position: relative; border: 1px solid var(--stamp-edge); background: #F7F9FD; padding: 12px 6px 6px; display: grid; justify-items: center; }
-.stamp-in svg { width: 78%; height: auto; aspect-ratio: 1; }
+.stamp-in svg { width: 88%; height: auto; aspect-ratio: 1; margin: -4px 0 -6px; }
 .stamp-in h3 { font-size: 1.75rem; line-height: 1; margin-top: -2px; }
 .stamp-value { position: absolute; top: 4px; left: 6px; font: 800 0.7rem var(--f-ui); color: var(--lav); }
 .event-when, .event-where { font-size: 0.66rem; letter-spacing: 0.12em; line-height: 1.45; color: var(--ink-soft); }
 .event-links { font: 700 0.72rem var(--f-ui); margin-top: 2px; }
 .event-links a { text-decoration: none; }
+.cal { display: inline-block; position: relative; }
+.cal summary { list-style: none; cursor: pointer; color: var(--lav); }
+.cal summary::-webkit-details-marker { display: none; }
+.cal summary::after { content: " ▾"; font-size: 0.8em; }
+.cal-menu {
+  position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); z-index: 5;
+  display: grid; min-width: 150px; padding: 4px; background: #FFFFFF; border: 1px solid var(--line);
+  border-radius: 10px; box-shadow: 0 10px 24px -12px rgba(30, 40, 80, 0.45); text-align: left;
+}
+.cal-menu a { padding: 8px 10px; border-radius: 7px; white-space: nowrap; }
+.cal-menu a:hover, .cal-menu a:focus-visible { background: var(--lav-soft); }
 .event-links a:hover { text-decoration: underline; }
 
 /* ---------- The Knot ---------- */
@@ -120,7 +131,7 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .env-to { position: absolute; left: 0; right: 0; top: 57%; transform: translateY(-50%); text-align: center; padding: 0 18px; display: grid; }
 .env-name { font-size: clamp(1.6rem, 6vw, 2rem); line-height: 1.1; color: #151A28; overflow-wrap: anywhere; }
 .env-to .caps { font-size: 0.64rem; letter-spacing: 0.14em; line-height: 1.55; color: #2E3654; overflow-wrap: anywhere; }
-.env-email { text-transform: none; font-family: var(--f-serif); letter-spacing: 0.04em !important; font-size: 0.85rem !important; }
+.env-email { font: italic 0.82rem var(--f-serif); color: #4A5378; margin-top: 3px; overflow-wrap: anywhere; }
 .env-sprig { position: absolute; bottom: 6px; left: 50%; transform: translateX(-50%); width: 76px; }
 .env-postmark {
   position: absolute; top: 4px; right: 40px; width: 78px; height: 78px; border: 2px solid var(--lav); border-radius: 50%;
@@ -134,10 +145,6 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 .invite-form { display: grid; gap: 12px; font-family: var(--f-ui); }
 fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
 legend { padding: 0; }
-.seg { display: grid; grid-template-columns: repeat(3, 1fr); background: #EEF1F8; border-radius: 999px; padding: 3px; gap: 3px; }
-.seg legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
-.seg button { border: 0; background: transparent; font: 600 0.88rem var(--f-ui); color: #44507A; padding: 9px 0; border-radius: 999px; cursor: pointer; }
-.seg button[aria-pressed="true"] { background: var(--navy); color: #FFFFFF; }
 .fld { display: grid; gap: 3px; min-width: 0; }
 .fld label, .chips legend { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
 .fld input, .fld select {
@@ -159,6 +166,8 @@ legend { padding: 0; }
 .chip-art { display: flex; height: 30px; align-items: center; }
 .chip-art svg { width: 30px; height: 30px; }
 .chip-art svg + svg { margin-left: -8px; }
+.chip-q { font: 400 1.9rem/1 var(--f-script); color: var(--lav); width: 30px; text-align: center; transform: translateY(2px); }
+.fld .opt { text-transform: none; letter-spacing: 0; font-weight: 500; font-style: italic; color: #8A90A8; }
 .chips button[aria-pressed="true"] { border-color: var(--lav); background: var(--lav-soft); color: #3F2E80; }
 .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
 .turnstile:empty { display: none; }
