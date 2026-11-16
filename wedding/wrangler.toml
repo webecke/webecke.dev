@@ -1,0 +1,22 @@
+# Cloudflare Pages project for wedding.webecke.dev.
+# Because this file sets pages_build_output_dir, Cloudflare treats it as the
+# source of truth for bindings and plain variables (the dashboard fields for
+# those become read-only). Secrets are still set in the dashboard.
+name = "wedding-webecke-dev"
+compatibility_date = "2025-06-01"
+pages_build_output_dir = "dist"
+
+[vars]
+# Public Turnstile site key (Cloudflare dashboard > Turnstile > your widget).
+TURNSTILE_SITE_KEY = "0x4AAAAAAGCnGAGLjCOeJjiq"
+# Cloudflare Access team domain, e.g. "https://webecke.cloudflareaccess.com".
+ACCESS_TEAM_DOMAIN = ""
+# Access application's "Application Audience (AUD) Tag".
+ACCESS_AUD = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "wedding"
+# Replace with the id printed by `npx wrangler d1 create wedding` (see README).
+database_id = "cc6164b7-d39c-48a0-8f10-bab5943ac3bd"
+migrations_dir = "migrations"
