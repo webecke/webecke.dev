@@ -10,6 +10,7 @@ export function renderAdminPage(rows: InviteRow[], all: boolean): string {
   const count = (pred: (r: InviteRow) => boolean) => rows.filter(pred).length;
   const stats: Array<[string, number]> = [
     [all ? 'Submissions' : 'Households', rows.length],
+    ['To process', count((r) => !r.processed_at)],
     ['By mail', count((r) => r.delivery !== 'email')],
     ['By email', count((r) => r.delivery !== 'mail')],
     ['Utah', count((r) => r.attending === 'utah' || r.attending === 'both')],
@@ -18,13 +19,21 @@ export function renderAdminPage(rows: InviteRow[], all: boolean): string {
   ];
 
   const body = rows.length === 0
-    ? '<tr><td colspan="6" class="empty">No one has sent their address yet. Once the link goes out, households show up here.</td></tr>'
+    ? '<tr><td colspan="7" class="empty">No one has sent their address yet. Once the link goes out, households show up here.</td></tr>'
     : rows.map((r) => {
         const addr = r.street1
           ? `${esc(r.street1)}${r.street2 ? `<br>${esc(r.street2)}` : ''}<br>${esc(r.city)}, ${esc(r.state)} ${esc(r.postal_code)}`
           : '<span class="muted">—</span>';
         const warn = r.zip_warning ? `<div class="warn">${esc(r.zip_warning)}</div>` : '';
-        return `<tr>
+        const done = !!r.processed_at;
+        const doneTitle = done ? `Processed ${mountainFriendly(r.processed_at!)}` : 'Not processed yet';
+        // Checkboxes only in the household view; the full history just shows a mark.
+        const check = all
+          ? `<span class="mark" title="${esc(doneTitle)}">${done ? '✓' : ''}</span>`
+          : `<input type="checkbox" class="done-box" data-id="${esc(r.id)}" ${done ? 'checked' : ''}
+               title="${esc(doneTitle)}" aria-label="Processed: ${esc(r.household_name)}">`;
+        return `<tr class="${done ? 'is-done' : ''}" data-created="${esc(r.created_at)}">
+          <td class="check">${check}</td>
           <td><b>${esc(r.household_name)}</b>${r.note ? `<div class="note">“${esc(r.note)}”</div>` : ''}</td>
           <td>${addr}${warn}</td>
           <td>${r.email ? esc(r.email) : '<span class="muted">—</span>'}</td>
@@ -61,6 +70,11 @@ export function renderAdminPage(rows: InviteRow[], all: boolean): string {
   .note { color:var(--muted); font-style:italic; font-size:.9rem; }
   .warn { color:#9A5B00; font-size:.85rem; margin-top:4px; }
   .empty { text-align:center; color:var(--muted); padding:36px; }
+  td.check { width: 44px; text-align: center; }
+  .done-box { width: 20px; height: 20px; accent-color: var(--lav); cursor: pointer; margin: 2px 0 0; }
+  .done-box:disabled { cursor: progress; }
+  .mark { color: var(--lav); font-weight: 700; }
+  tr.is-done td:not(.check) { opacity: .5; }
   p.hint { color:var(--muted); margin:0; font-size:.9rem; }
 </style></head>
 <body><main>
@@ -72,10 +86,51 @@ export function renderAdminPage(rows: InviteRow[], all: boolean): string {
     </div>
   </header>
   <div class="stats">${stats.map(([l, n]) => `<div class="stat"><b>${n}</b><span>${l}</span></div>`).join('')}</div>
-  <p class="hint">${all ? 'Every submission, newest first, including corrections.' : 'One row per household: when someone resends the form, only their newest submission shows.'}</p>
+  <p class="hint">${all ? 'Every submission, newest first, including corrections.' : 'One row per household, newest first, with processed households at the bottom. If someone resends the form, their new entry shows up unchecked.'}</p>
   <div class="wrap"><table>
-    <thead><tr><th>Name</th><th>Address</th><th>Email</th><th>Invite by</th><th>Reception</th><th>Sent (Mountain)</th></tr></thead>
+    <thead><tr><th title="Processed">Done</th><th>Name</th><th>Address</th><th>Email</th><th>Invite by</th><th>Reception</th><th>Sent (Mountain)</th></tr></thead>
     <tbody>${body}</tbody>
   </table></div>
-</main></body></html>`;
+</main>
+<script>
+  // Save each checkbox as soon as it's clicked; undo it if the save fails.
+  const toProcess = [...document.querySelectorAll('.stat')].find((s) => s.textContent.includes('To process'));
+  const refreshCount = () => {
+    if (toProcess) toProcess.querySelector('b').textContent = document.querySelectorAll('.done-box:not(:checked)').length;
+  };
+  // Same order as the server: to-process first, then processed; newest first in each.
+  const resort = () => {
+    const body = document.querySelector('tbody');
+    const rows = [...body.querySelectorAll('tr[data-created]')];
+    rows.sort((a, b) =>
+      (a.classList.contains('is-done') - b.classList.contains('is-done')) ||
+      b.dataset.created.localeCompare(a.dataset.created));
+    rows.forEach((r) => body.appendChild(r));
+  };
+  document.addEventListener('change', async (e) => {
+    const box = e.target;
+    if (!box.classList || !box.classList.contains('done-box')) return;
+    const row = box.closest('tr');
+    box.disabled = true;
+    try {
+      const res = await fetch('/admin/processed', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ id: box.dataset.id, processed: box.checked }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not save. Please reload and try again.');
+      row.classList.toggle('is-done', box.checked);
+      box.title = box.checked ? 'Processed just now' : 'Not processed yet';
+      resort();
+    } catch (err) {
+      box.checked = !box.checked;
+      alert(err.message || 'Could not save. Please reload and try again.');
+    } finally {
+      box.disabled = false;
+      refreshCount();
+    }
+  });
+</script>
+</body></html>`;
 }

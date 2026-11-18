@@ -69,6 +69,11 @@ Done once, in the Cloudflare dashboard. After that, every push to `main` deploys
 
 - Everyone gives a mailing address; an email is optional ("invite by email too").
   The *Invite by* column reads `mail`, or `both` when they left an email.
+- In `/admin`, tick the box once a household is handled (addressed, mailed, emailed).
+  Processed households sink to the bottom. The tick belongs to that submission, so a
+  household that resends the form shows up unchecked again.
+- Schema changes: run each new file in `migrations/` once in the D1 database's *Console*
+  (or `npm run db:migrate:remote`) **before** merging code that uses it.
 - Every submission is kept; resending the form is how guests fix typos. `/admin`
   and the CSV show one row per household (newest wins), keyed by street + ZIP.
   `/admin?all=1` shows everything.

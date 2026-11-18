@@ -15,6 +15,8 @@ export interface InviteRow {
   note: string | null;
   zip_warning: string | null;
   dedupe_key: string;
+  /** When it was checked off in /admin (UTC), or null. */
+  processed_at: string | null;
 }
 
 export async function insertInvite(
@@ -32,8 +34,9 @@ export async function insertInvite(
 }
 
 /**
- * Newest submission per household (or every submission when `all` is true),
- * newest first.
+ * Newest submission per household, households still to process first, then
+ * processed ones; newest first within each group. With `all`, every
+ * submission in plain newest-first order (the history view).
  */
 export async function listInvites(db: D1Database, all = false): Promise<InviteRow[]> {
   const sql = all
@@ -41,7 +44,13 @@ export async function listInvites(db: D1Database, all = false): Promise<InviteRo
     : `SELECT * FROM (
          SELECT *, ROW_NUMBER() OVER (PARTITION BY dedupe_key ORDER BY created_at DESC, id DESC) AS rn
          FROM invite_requests
-       ) WHERE rn = 1 ORDER BY created_at DESC, id DESC`;
+       ) WHERE rn = 1 ORDER BY (processed_at IS NOT NULL), created_at DESC, id DESC`;
   const { results } = await db.prepare(sql).all<InviteRow>();
   return results;
+}
+
+/** Check a submission off (or un-check it). Returns false when no row has that id. */
+export async function setProcessed(db: D1Database, id: string, processedAt: string | null): Promise<boolean> {
+  const res = await db.prepare('UPDATE invite_requests SET processed_at = ?1 WHERE id = ?2').bind(processedAt, id).run();
+  return (res.meta?.changes ?? 0) > 0;
 }

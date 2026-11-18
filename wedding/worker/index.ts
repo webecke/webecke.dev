@@ -9,6 +9,7 @@ import { toCsv } from '../server/csv';
 import { listInvites } from '../server/db';
 import { json, type Env } from '../server/env';
 import { handleInvite } from '../server/invite';
+import { handleProcessed } from '../server/processed';
 
 /** Headers the static files get from public/_headers; Worker responses need them added here. */
 function withSiteHeaders(res: Response, extra: Record<string, string> = {}): Response {
@@ -37,6 +38,9 @@ async function route(request: Request, env: Env): Promise<Response> {
   if (path === '/admin' || path.startsWith('/admin/')) {
     const denied = await checkAdmin(request, env);
     if (denied) return denied;
+    if (path === '/admin/processed') {
+      return request.method === 'POST' ? handleProcessed(request, env) : methodNotAllowed('POST');
+    }
     if (request.method !== 'GET') return methodNotAllowed('GET');
     const all = url.searchParams.get('all') === '1';
     if (path === '/admin') {

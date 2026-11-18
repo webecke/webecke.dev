@@ -14,6 +14,7 @@ const COLUMNS: Array<[header: string, get: (r: InviteRow) => string | null]> = [
   ['Note', (r) => r.note],
   ['ZIP check', (r) => r.zip_warning],
   ['Submitted (Mountain)', (r) => mountainSortable(r.created_at)],
+  ['Processed (Mountain)', (r) => (r.processed_at ? mountainSortable(r.processed_at) : '')],
 ];
 
 /** One CSV cell, quoted, with spreadsheet formula injection neutralized. */

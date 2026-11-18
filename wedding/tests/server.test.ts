@@ -69,7 +69,7 @@ describe('POST /api/invite', () => {
 const row = (over: Partial<InviteRow> = {}): InviteRow => ({
   id: '1', created_at: '2026-11-14T00:00:00.000Z', household_name: 'The Jensens', delivery: 'mail', email: null,
   street1: '1 Main St', street2: null, city: 'Lindon', state: 'UT', postal_code: '84042', attending: 'utah',
-  note: null, zip_warning: null, dedupe_key: 'k', ...over,
+  note: null, zip_warning: null, dedupe_key: 'k', processed_at: null, ...over,
 });
 
 describe('CSV export', () => {
@@ -124,5 +124,55 @@ describe('Mountain time', () => {
     expect(mountainSortable('2026-11-16T03:30:00.000Z')).toBe('2026-11-15 20:30 MST');
     expect(mountainSortable('2026-07-04T18:05:00.000Z')).toBe('2026-07-04 12:05 MDT');
     expect(mountainSortable('not a date')).toBe('not a date');
+  });
+});
+
+import { handleProcessed } from '../server/processed';
+
+describe('POST /admin/processed', () => {
+  const db = (changes: number) => {
+    const calls: unknown[][] = [];
+    const d = {
+      prepare: (sql: string) => ({ bind: (...args: unknown[]) => ({ run: async () => { calls.push([sql, ...args]); return { meta: { changes } }; } }) }),
+    } as unknown as D1Database;
+    return { d, calls };
+  };
+  const post = (body: unknown, origin = 'https://wedding.webecke.dev') =>
+    new Request('https://wedding.webecke.dev/admin/processed', {
+      method: 'POST', headers: { 'content-type': 'application/json', origin }, body: JSON.stringify(body),
+    });
+  const now = () => new Date('2026-11-18T17:00:00.000Z');
+
+  it('checks a household off with the current time, and un-checks it', async () => {
+    const { d, calls } = db(1);
+    const on = await handleProcessed(post({ id: 'abc', processed: true }), { DB: d }, now);
+    expect(on.status).toBe(200);
+    expect(await on.json()).toEqual({ ok: true, processedAt: '2026-11-18T17:00:00.000Z' });
+    const off = await handleProcessed(post({ id: 'abc', processed: false }), { DB: d }, now);
+    expect(await off.json()).toEqual({ ok: true, processedAt: null });
+    expect(calls.map((c) => c.slice(1))).toEqual([['2026-11-18T17:00:00.000Z', 'abc'], [null, 'abc']]);
+    // Only ever an UPDATE of one column: nothing is deleted or overwritten.
+    expect(calls.every((c) => /^UPDATE invite_requests SET processed_at = \?1 WHERE id = \?2$/.test(c[0] as string))).toBe(true);
+  });
+
+  it('rejects other sites, bad input, and unknown ids', async () => {
+    expect((await handleProcessed(post({ id: 'abc', processed: true }, 'https://evil.example'), { DB: db(1).d })).status).toBe(403);
+    expect((await handleProcessed(post({ id: 'abc', processed: 'yes' }), { DB: db(1).d })).status).toBe(400);
+    expect((await handleProcessed(post({ processed: true }), { DB: db(1).d })).status).toBe(400);
+    expect((await handleProcessed(post({ id: 'gone', processed: true }), { DB: db(0).d })).status).toBe(404);
+  });
+});
+
+describe('admin page checkboxes', () => {
+  it('shows a checkbox per household, checked when processed, and counts what is left', () => {
+    const html = renderAdminPage([row({ id: 'a' }), row({ id: 'b', processed_at: '2026-11-18T17:00:00.000Z' })], false);
+    expect(html).toContain('data-id="a"');
+    expect(html).toMatch(/data-id="b"[^>]*checked/);
+    expect(html).toMatch(/<b>1<\/b><span>To process<\/span>/);
+  });
+  it('shows marks, not checkboxes, in the full history', () => {
+    const html = renderAdminPage([row({ processed_at: '2026-11-18T17:00:00.000Z' })], true);
+    expect(html).not.toContain('class="done-box"');
+    expect(html).toContain('✓');
   });
 });
